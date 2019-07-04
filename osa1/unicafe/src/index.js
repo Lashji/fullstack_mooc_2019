@@ -14,11 +14,20 @@ const Button = ({ clickHandler, text }) => {
 
 const Statistics = ({ stats }) => {
 
+    const getAll = () => stats.good + stats.neutral + stats.bad
+
+    const getAverage = () => (stats.good - stats.bad) / getAll()
+    const getPositive = () => (stats.good * 100) / getAll()
+
+
     return (
         <div>
             <p>good {stats.good}</p>
             <p>neutral {stats.neutral}</p>
             <p>bad {stats.bad}</p>
+            <p>all {getAll()}</p>
+            <p>average {!isNaN(getAverage()) ? getAverage() : 0}</p>
+            <p>positive {!isNaN(getPositive()) ? getPositive() : 0}</p>
         </div>
     )
 }
