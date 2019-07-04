@@ -13,6 +13,12 @@ const Button = ({ clickHandler, text }) => {
 }
 
 const Statistics = ({ stats }) => {
+    if (stats.good === 0 && stats.neutral === 0 && stats.bad === 0)
+        return (
+            <div>
+                <p>No feedback given</p>
+            </div>
+        )
 
     const getAll = () => stats.good + stats.neutral + stats.bad
     const getAverage = () => (stats.good - stats.bad) / getAll()
