@@ -12,6 +12,14 @@ const Button = ({ clickHandler, text }) => {
     )
 }
 
+const Statistic = ({ text, value }) => {
+    return (
+        <div>
+            <p>{text}: {value}</p>
+        </div>
+    )
+}
+
 const Statistics = ({ stats }) => {
     if (stats.good === 0 && stats.neutral === 0 && stats.bad === 0)
         return (
@@ -26,12 +34,12 @@ const Statistics = ({ stats }) => {
 
     return (
         <div>
-            <p>good {stats.good}</p>
-            <p>neutral {stats.neutral}</p>
-            <p>bad {stats.bad}</p>
-            <p>all {getAll()}</p>
-            <p>average {!isNaN(getAverage()) ? getAverage() : 0}</p>
-            <p>positive {!isNaN(getPositive()) ? getPositive() : 0}</p>
+            <Statistic text="good" value={stats.good} />
+            <Statistic text="neutral" value={stats.neutral} />
+            <Statistic text="bad" value={stats.bad} />
+            <Statistic text="all" value={getAll()} />
+            <Statistic text="average" value={!isNaN(getAverage()) ? getAverage() : 0} />
+            <Statistic text="positive" value={!isNaN(getPositive()) ? getPositive() : 0} />
         </div>
     )
 }
@@ -58,9 +66,6 @@ const App = () => {
                     break
                 default: break
             }
-
-            console.log("setting value")
-
         }
     }
 
@@ -74,7 +79,6 @@ const App = () => {
                 <Button clickHandler={setValue("neutral")} text="neutral" />
                 <Button clickHandler={setValue("bad")} text="bad" />
             </div>
-
             < Statistics stats={{ good: good, neutral: neutral, bad: bad }} />
         </div>
     )
