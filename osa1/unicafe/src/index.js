@@ -15,10 +15,8 @@ const Button = ({ clickHandler, text }) => {
 const Statistics = ({ stats }) => {
 
     const getAll = () => stats.good + stats.neutral + stats.bad
-
     const getAverage = () => (stats.good - stats.bad) / getAll()
     const getPositive = () => (stats.good * 100) / getAll()
-
 
     return (
         <div>
