@@ -14,9 +14,7 @@ const Button = ({ clickHandler, text }) => {
 
 const Statistic = ({ text, value }) => {
     return (
-        <div>
-            <p>{text}: {value}</p>
-        </div>
+        <><tr><td><p>{text}: {value}</p></td></tr ></>
     )
 }
 
@@ -34,12 +32,16 @@ const Statistics = ({ stats }) => {
 
     return (
         <div>
-            <Statistic text="good" value={stats.good} />
-            <Statistic text="neutral" value={stats.neutral} />
-            <Statistic text="bad" value={stats.bad} />
-            <Statistic text="all" value={getAll()} />
-            <Statistic text="average" value={!isNaN(getAverage()) ? getAverage() : 0} />
-            <Statistic text="positive" value={!isNaN(getPositive()) ? getPositive() : 0} />
+            <table>
+                <tbody>
+                    <Statistic text="good" value={stats.good} />
+                    <Statistic text="neutral" value={stats.neutral} />
+                    <Statistic text="bad" value={stats.bad} />
+                    <Statistic text="all" value={getAll()} />
+                    <Statistic text="average" value={!isNaN(getAverage()) ? getAverage() : 0} />
+                    <Statistic text="positive" value={!isNaN(getPositive()) ? getPositive() : 0} />
+                </tbody>
+            </table>
         </div>
     )
 }
