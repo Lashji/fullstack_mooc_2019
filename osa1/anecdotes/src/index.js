@@ -20,7 +20,7 @@ const Anecdote = ({ props }) => {
         <div>
             <h1>{header}</h1>
             <p>{anecdotes[selected]}</p>
-            <p>votes: {points[selected]}</p>
+            <p>has votes: {points[selected]}</p>
         </div>
     )
 }
