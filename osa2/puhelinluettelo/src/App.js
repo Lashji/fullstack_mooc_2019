@@ -5,19 +5,23 @@ import Person from "./components/Person"
 const App = () => {
 
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: "040-1234567" }
   ])
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
-  const inputChangeHandler = (event) => {
+  const nameChangeHandler = (event) => {
     setNewName(event.target.value)
+  }
+  const numberChangeHandler = (event) => {
+    setNewNumber(event.target.value)
   }
 
   const rows = () => persons.map(p => {
     console.log("p", p)
     return <Person
       key={p.name}
-      name={p.name}
+      person={p}
     />
   }
   )
@@ -26,7 +30,8 @@ const App = () => {
     event.preventDefault()
 
     const personObject = {
-      name: newName
+      name: newName,
+      number: newNumber
     }
 
     if ((persons.filter((p) => p.name == newName)).length > 0) {
@@ -37,6 +42,7 @@ const App = () => {
     console.log("newname", newName)
     setPersons(persons.concat(personObject))
     setNewName('')
+    setNewNumber('')
   }
 
   return (
@@ -46,7 +52,12 @@ const App = () => {
         <div>
           name: <input
             value={newName}
-            onChange={inputChangeHandler} />
+            onChange={nameChangeHandler} />
+        </div>
+        <div>
+          number: <input
+            value={newNumber}
+            onChange={numberChangeHandler} />
         </div>
         <div>
           <button type="submit">add</button>
