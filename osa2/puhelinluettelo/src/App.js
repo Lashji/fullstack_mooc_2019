@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import Person from "./components/Person"
-
-
+import Persons from "./components/Persons"
+import Form from './components/AddPersonForm'
+import Filter from './components/Filter'
 const App = () => {
 
   const [persons, setPersons] = useState([
@@ -22,14 +22,6 @@ const App = () => {
   const numberChangeHandler = (event) => {
     setNewNumber(event.target.value)
   }
-
-  const rows = () => getFilteredValues().map(p => {
-    return <Person
-      key={p.name}
-      person={p}
-    />
-  })
-
 
   const addNewPerson = (event) => {
     event.preventDefault()
@@ -71,29 +63,22 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with: <input onChange={filterHandler} />
-      </div>
+
+      <Filter data={{ filterHandler }} />
+
       <h2>Add a new number</h2>
-      <form onSubmit={addNewPerson}>
-        <div>
-          name: <input
-            value={newName}
-            onChange={nameChangeHandler} />
-        </div>
-        <div>
-          number: <input
-            value={newNumber}
-            onChange={numberChangeHandler} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+
+      <Form data={{
+        addNewPerson,
+        newName,
+        nameChangeHandler,
+        newNumber,
+        numberChangeHandler
+      }} />
+
       <h2>Numbers</h2>
-      <ul>
-        {rows()}
-      </ul>
+      <Persons values={getFilteredValues()} />
+
     </div>
   )
 
