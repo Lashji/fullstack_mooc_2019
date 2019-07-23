@@ -2,44 +2,43 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import './App.css';
 import Filter from './components/Filter'
+import AllCountries from './components/AllCountries';
 
 function App() {
   const [countryData, setCountryData] = useState([])
-  const [filterValue, setFilterValue] = useState("")
   const [filteredCountries, setFilteredCountries] = useState([])
 
-  const filterCountries = () => {
+  const filterCountries = (value) => {
     const tmp = countryData.filter(country => {
-      console.log("country ", country.name)
-      console.log("filtervalue: ", filterValue)
-      const bool = country.name.toLowerCase().startsWith(filterValue)
-      console.log(bool)
-      return bool
+      if (value === "")
+        return false
+
+      return country.name.toLowerCase().startsWith(value.toLowerCase())
+
     })
 
-    setFilteredCountries(filteredCountries.concat(tmp))
-    console.log("tmp: ", tmp)
+    console.log("tmp", tmp)
+    setFilteredCountries(tmp)
   }
 
   useEffect(() => {
     axios
       .get("https://restcountries.eu/rest/v2/all")
       .then((res) => {
-        // console.log(res)
         setCountryData(res.data)
-        // console.log(res.data)
       })
   }, [])
 
   const changeHandler = (event) => {
-    setFilterValue(event.target.value)
-    filterCountries()
-    console.log(event.target.value)
+
+    filterCountries(event.target.value)
+
   }
 
   return (
     <div>
       <Filter changeHandler={changeHandler} />
+      <AllCountries countries={filteredCountries} />
     </div>
   );
 }
