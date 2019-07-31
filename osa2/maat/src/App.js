@@ -30,15 +30,15 @@ function App() {
   }, [])
 
   const changeHandler = (event) => {
-
     filterCountries(event.target.value)
-
   }
+
+  
 
   return (
     <div>
       <Filter changeHandler={changeHandler} />
-      <AllCountries countries={filteredCountries} />
+      <AllCountries countries={filteredCountries} show={filterCountries} />
     </div>
   );
 }
