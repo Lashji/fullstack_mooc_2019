@@ -4,15 +4,15 @@ import Persons from "./components/Persons"
 import Form from './components/AddPersonForm'
 import Filter from './components/Filter'
 import PersonService from './services/Persons'
-
+import Message from './components/Message'
 
 const App = () => {
 
   const [persons, setPersons] = useState([])
-
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     PersonService.getAll()
@@ -41,9 +41,17 @@ const App = () => {
 
       console.log("delete res=>", res)
       setPersons(persons.filter(p => p.id !== id))
+
+      printMessage(`person id ${id}  deleted`)
+    }).catch(() => {
+      printMessage(`Error: person id ${id} failed`)
     })
   }
 
+  const printMessage = (message) => {
+    setMessage(message)
+    resetMessage()
+  }
 
   const numberChangeHandler = (event) => {
     setNewNumber(event.target.value)
@@ -66,19 +74,32 @@ const App = () => {
 
       PersonService.update(pid, personObject).then(() => {
         setPersons(persons.map(p => p.id !== pid ? p : personObject))
+
+        printMessage(`person ${personObject.name} Updated`)
       })
-      .catch(() => {
-        console.log("error")
-      })
+        .catch(() => {
+          printMessage(`Error: person id ${pid} failed`)
+        })
     } else {
 
       PersonService.create(personObject).then((newPerson) => {
         console.log("creating new person", newPerson)
         setPersons(persons.concat(newPerson))
+        printMessage(`person ${personObject.name} added`)
+    
+      }).catch(() => {
+        printMessage(`Error: adding new person failed`)
       })
-
+      console.log("personobject: ", personObject)
     }
+
     resetFields()
+  }
+
+  const resetMessage = () => {
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
 
   const resetFields = () => {
@@ -107,7 +128,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Message message={message} />
       <Filter data={{ filterHandler }} />
 
       <h2>Add a new number</h2>
