@@ -3,6 +3,9 @@ import axios from 'axios'
 import Persons from "./components/Persons"
 import Form from './components/AddPersonForm'
 import Filter from './components/Filter'
+import PersonService from './services/Persons'
+
+
 const App = () => {
 
   const [persons, setPersons] = useState([])
@@ -12,13 +15,13 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    console.log('useEffect')
-    axios
-      .get("http://localhost:3001/persons")
-      .then(r => {
-        console.log(r)
-        setPersons(r.data)
+      PersonService.getAll()
+      .then(data => {
+        console.log(data)
+        setPersons(data)
       })
+
+    PersonService.getAll().then(res => console.log("service=", res))
   }, [])
 
 
@@ -41,7 +44,11 @@ const App = () => {
     if (checkIfExist())
       return
 
-    setPersons(persons.concat(personObject))
+    PersonService.create(personObject).then((newPerson) => {
+      console.log("creating new person", newPerson)
+      setPersons(persons.concat(newPerson))
+    })
+
     resetFields()
   }
 
