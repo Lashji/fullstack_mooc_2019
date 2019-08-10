@@ -15,7 +15,7 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-      PersonService.getAll()
+    PersonService.getAll()
       .then(data => {
         console.log(data)
         setPersons(data)
@@ -29,72 +29,88 @@ const App = () => {
     setNewName(event.target.value)
   }
 
-  const numberChangeHandler = (event) => {
-    setNewNumber(event.target.value)
-  }
 
-  const addNewPerson = (event) => {
-    event.preventDefault()
-
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
-
-    if (checkIfExist())
+  const deleteHandler = (id) => {
+    console.log("delete id =>", id)
+    
+    let result = window.confirm("Do you want to delete message nr" + id)
+    if (!result)
       return
 
-    PersonService.create(personObject).then((newPerson) => {
-      console.log("creating new person", newPerson)
-      setPersons(persons.concat(newPerson))
-    })
+    PersonService.deletePerson(id).then((res) => {
 
-    resetFields()
+      console.log("delete res=>", res)
+    setPersons(persons.filter(p => p.id !== id))
+  })
+}
+
+
+const numberChangeHandler = (event) => {
+  setNewNumber(event.target.value)
+}
+
+const addNewPerson = (event) => {
+  event.preventDefault()
+
+  const personObject = {
+    name: newName,
+    number: newNumber
   }
 
-  const resetFields = () => {
-    setNewName('')
-    setNewNumber('')
+  if (checkIfExist())
+    return
+
+  PersonService.create(personObject).then((newPerson) => {
+    console.log("creating new person", newPerson)
+    setPersons(persons.concat(newPerson))
+  })
+
+  resetFields()
+}
+
+const resetFields = () => {
+  setNewName('')
+  setNewNumber('')
+}
+
+const filterHandler = (event) => {
+  console.log("filtering....")
+  setFilter(event.target.value.toLowerCase())
+}
+
+const checkIfExist = () => {
+  if ((persons.filter((p) => p.name === newName)).length > 0) {
+    alert(`${newName} is already added to phonebook`)
+    return true
   }
+  return false
+}
 
-  const filterHandler = (event) => {
-    console.log("filtering....")
-    setFilter(event.target.value.toLowerCase())
-  }
+const getFilteredValues = () => {
+  return filter.length > 0 ? persons.filter(p => p.name.toLowerCase().startsWith(filter)) : persons
+}
 
-  const checkIfExist = () => {
-    if ((persons.filter((p) => p.name === newName)).length > 0) {
-      alert(`${newName} is already added to phonebook`)
-      return true
-    }
-    return false
-  }
+return (
+  <div>
+    <h2>Phonebook</h2>
 
-  const getFilteredValues = () => {
-    return filter.length > 0 ? persons.filter(p => p.name.toLowerCase().startsWith(filter)) : persons
-  }
+    <Filter data={{ filterHandler }} />
 
-  return (
-    <div>
-      <h2>Phonebook</h2>
+    <h2>Add a new number</h2>
 
-      <Filter data={{ filterHandler }} />
+    <Form data={{
+      addNewPerson,
+      newName,
+      nameChangeHandler,
+      newNumber,
+      numberChangeHandler
+    }} />
 
-      <h2>Add a new number</h2>
+    <h2>Numbers</h2>
+    <Persons values={getFilteredValues()} deleteHandler={deleteHandler} />
 
-      <Form data={{
-        addNewPerson,
-        newName,
-        nameChangeHandler,
-        newNumber,
-        numberChangeHandler
-      }} />
-
-      <h2>Numbers</h2>
-      <Persons values={getFilteredValues()} />
-
-    </div>
-  )
+  </div>
+)
 
 }
 
