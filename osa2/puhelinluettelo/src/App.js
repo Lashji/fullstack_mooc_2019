@@ -32,7 +32,7 @@ const App = () => {
 
   const deleteHandler = (id) => {
     console.log("delete id =>", id)
-    
+
     let result = window.confirm("Do you want to delete message nr" + id)
     if (!result)
       return
@@ -40,77 +40,91 @@ const App = () => {
     PersonService.deletePerson(id).then((res) => {
 
       console.log("delete res=>", res)
-    setPersons(persons.filter(p => p.id !== id))
-  })
-}
-
-
-const numberChangeHandler = (event) => {
-  setNewNumber(event.target.value)
-}
-
-const addNewPerson = (event) => {
-  event.preventDefault()
-
-  const personObject = {
-    name: newName,
-    number: newNumber
+      setPersons(persons.filter(p => p.id !== id))
+    })
   }
 
-  if (checkIfExist())
-    return
 
-  PersonService.create(personObject).then((newPerson) => {
-    console.log("creating new person", newPerson)
-    setPersons(persons.concat(newPerson))
-  })
-
-  resetFields()
-}
-
-const resetFields = () => {
-  setNewName('')
-  setNewNumber('')
-}
-
-const filterHandler = (event) => {
-  console.log("filtering....")
-  setFilter(event.target.value.toLowerCase())
-}
-
-const checkIfExist = () => {
-  if ((persons.filter((p) => p.name === newName)).length > 0) {
-    alert(`${newName} is already added to phonebook`)
-    return true
+  const numberChangeHandler = (event) => {
+    setNewNumber(event.target.value)
   }
-  return false
-}
 
-const getFilteredValues = () => {
-  return filter.length > 0 ? persons.filter(p => p.name.toLowerCase().startsWith(filter)) : persons
-}
+  const addNewPerson = (event) => {
+    event.preventDefault()
 
-return (
-  <div>
-    <h2>Phonebook</h2>
+    const personObject = {
+      name: newName,
+      number: newNumber
+    }
 
-    <Filter data={{ filterHandler }} />
+    let pid = checkIfExist()
 
-    <h2>Add a new number</h2>
+    if (pid !== -1) {
 
-    <Form data={{
-      addNewPerson,
-      newName,
-      nameChangeHandler,
-      newNumber,
-      numberChangeHandler
-    }} />
+      if (!window.confirm("phonenumber already exists. Do you want to replace existing number with a new one?"))
+        return
 
-    <h2>Numbers</h2>
-    <Persons values={getFilteredValues()} deleteHandler={deleteHandler} />
+      PersonService.update(pid, personObject).then(() => {
+        setPersons(persons.map(p => p.id !== pid ? p : personObject))
+      })
+      .catch(() => {
+        console.log("error")
+      })
+    } else {
 
-  </div>
-)
+      PersonService.create(personObject).then((newPerson) => {
+        console.log("creating new person", newPerson)
+        setPersons(persons.concat(newPerson))
+      })
+
+    }
+    resetFields()
+  }
+
+  const resetFields = () => {
+    setNewName('')
+    setNewNumber('')
+  }
+
+  const filterHandler = (event) => {
+    console.log("filtering....")
+    setFilter(event.target.value.toLowerCase())
+  }
+
+  const checkIfExist = () => {
+    let filteredPersons = persons.filter((p) => p.name === newName)
+    if (filteredPersons.length > 0) {
+      return filteredPersons[0].id
+    }
+
+    return -1
+  }
+
+  const getFilteredValues = () => {
+    return filter.length > 0 ? persons.filter(p => p.name.toLowerCase().startsWith(filter)) : persons
+  }
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+
+      <Filter data={{ filterHandler }} />
+
+      <h2>Add a new number</h2>
+
+      <Form data={{
+        addNewPerson,
+        newName,
+        nameChangeHandler,
+        newNumber,
+        numberChangeHandler
+      }} />
+
+      <h2>Numbers</h2>
+      <Persons values={getFilteredValues()} deleteHandler={deleteHandler} />
+
+    </div>
+  )
 
 }
 
